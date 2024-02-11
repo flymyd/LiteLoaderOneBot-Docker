@@ -1,25 +1,7 @@
-# 获取系统架构
-arch=$(uname -m)
-if [ "$arch" = "aarch64" ]; then
-    # ARM架构（例如：树莓派或其他ARM64设备）
-    curl https://dldir1.qq.com/qqfile/qq/QQNT/852276c1/linuxqq_3.2.5-21453_arm64.deb -o qqnt.deb
-elif [ "$arch" = "x86_64" ]; then
-    # AMD/Intel 64位架构
-    curl https://dldir1.qq.com/qqfile/qq/QQNT/852276c1/linuxqq_3.2.5-21453_amd64.deb -o qqnt.deb
-else
-    echo "不支持当前系统的架构类型: $arch"
-    exit 1
-fi
 # 安装下载好的deb包
 dpkg -i qqnt.deb
 # 删除下载文件以节省空间
 rm qqnt.deb
-# 检查是否为 root 用户
-if [ "$(id -u)" -eq 0 ]; then
-    echo "禁止以 root 用户执行此脚本"
-    echo "请使用普通用户执行"
-    exit 1
-fi
 
 if [ "$GITHUB_ACTIONS" == "true" ]; then
     echo "Detected GitHub Actions environment. Setting default values for non-interactive mode."
@@ -149,34 +131,9 @@ fi
 chmod -R 0777 /opt/LiteLoader
 echo "已赋予插件目录读写权限。"
 
-# 检查操作系统类型并安装unzip
-if command -v apt-get > /dev/null; then
-    sudo apt-get update && sudo apt-get install -y unzip
-elif command -v yum > /dev/null; then
-    sudo yum install -y unzip
-else
-    echo "Unsupported package manager. Please make sure to install 'unzip' manually."
-    exit 1
-fi
-
-# 确保unzip已成功安装
-if ! command -v unzip > /dev/null; then
-    echo "'unzip' is not installed. Exiting..."
-    exit 1
-fi
-
 #安装LLOnebot
-# 下载并保存为LLOnebot.zip
-sudo curl -o LLOnebot.zip https://mirror.ghproxy.com/github.com/andbutor/LiteLoaderQQNT-Onebot/files/14231990/LLOnebot.zip
-sudo curl -o LLAPI.zip https://github.com/Night-stars-1/LiteLoaderQQNT-Plugin-LLAPI/archive/refs/heads/main.zip
-
-# 检查下载是否成功（可选）
-if [ $? -eq 0 ]; then
-    echo "下载成功."
-else
-    echo "下载失败，请检查你的网络."
-    exit 1
-fi
+cp /root/LLOnebot.zip LLOnebot.zip
+cp /root/LLAPI.zip LLAPI.zip
 
 # 解压文件到当前目录（假设压缩包内是一个目录）
 sudo unzip LLOnebot.zip
